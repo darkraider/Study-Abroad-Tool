@@ -39,7 +39,7 @@ type CombinedScholarship = {
   categoryType?: "government" | "school" | "thirdParty" | "custom";
 };
 type ScholarshipCategory = "government" | "school" | "thirdParty";
-type BaseScholarshipData = { [key in ScholarshipCategory]: Omit<CombinedScholarship, 'isCustom' | 'categoryType' | 'id'> & {id: number} []; };
+type BaseScholarshipData = { [key in ScholarshipCategory]: (Omit<CombinedScholarship, 'isCustom' | 'categoryType' | 'id'> & { id: number })[]; };
 type CalendarEvent = { id: string; title: string; start: string; end?: string; allDay: boolean; };
 type BudgetScholarshipItem = { id: string; item: string; cost: number; };
 
