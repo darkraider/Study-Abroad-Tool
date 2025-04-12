@@ -217,7 +217,7 @@ const BudgetSheet = () => {
                 const updatedItems = (Array.isArray(category.items) ? category.items : []).map(item => item.id === itemId ? { ...item, cost: costValue } : item);
                 const updatedCategory = { ...category, items: updatedItems };
                 await store.put(updatedCategory); await tx.done;
-                setExpenses(prev => prev.map(exp => exp.id === categoryId ? { ...exp, items: updatedItems } : exp));
+                setExpenses(prev => prev.map(exp => exp.id === categoryId ? { ...exp, items: updatedItems.map(item => ({ ...item, id: String(item.id) })) } : exp));
                 setEditingItemCost(prev => { const newState = {...prev}; delete newState[itemId]; return newState; });
             } else { throw new Error(`Category ${categoryId} not found.`); }
         } catch (err) { console.error("Update Cost Error:", err); setItemCostErrors(prev => ({ ...prev, [itemId]: "Save failed" })); }
