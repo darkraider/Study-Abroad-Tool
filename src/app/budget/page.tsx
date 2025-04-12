@@ -231,7 +231,7 @@ const BudgetSheet = () => {
                 const updatedItems = (Array.isArray(category.items) ? category.items : []).filter(item => item.id !== itemId);
                 const updatedCategory = { ...category, items: updatedItems };
                 await store.put(updatedCategory); await tx.done;
-                setExpenses(prev => prev.map(exp => exp.id === categoryId ? { ...updatedCategory } : exp));
+                setExpenses(prev => prev.map(exp => exp.id === categoryId ? { ...updatedCategory, items: updatedCategory.items.map(item => ({ ...item, id: String(item.id) })) } : exp));
             } else { throw new Error(`Category ${categoryId} not found.`); }
         } catch (err) { console.error("Remove Item Error:", err); setError("Failed remove item."); }
      }, []);
