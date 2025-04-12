@@ -193,7 +193,7 @@ const BudgetSheet = () => {
                 const updatedItems = [...(Array.isArray(category.items) ? category.items : []), newItemData];
                 const updatedCategory = { ...category, items: updatedItems };
                 await store.put(updatedCategory); await tx.done;
-                setExpenses(prev => prev.map(exp => exp.id === addItemTargetCategory.id ? { ...updatedCategory, items: updatedItems.map(i => ({ ...i, cost: Number(i.cost) || 0 })) } : exp));
+                setExpenses(prev => prev.map(exp => exp.id === addItemTargetCategory.id ? { ...updatedCategory, items: updatedItems.map(i => ({ ...i, id: String(i.id), cost: Number(i.cost) || 0 })) } : exp));
                 setIsAddItemModalOpen(false);
             } else { throw new Error(`Category ${addItemTargetCategory.id} not found.`); }
         } catch (err) { console.error("Add Item Error:", err); setAddItemError("Failed to add item."); }
