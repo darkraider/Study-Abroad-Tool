@@ -103,7 +103,155 @@ export default function ScholarshipPlan() {
 
   // --- Data Loading Effect --- (useEffect Hook)
   useEffect(() => {
-    const loadInitialData = async () => { setLoading(true); setInitError(null); try { const [b, e, s, c] = await Promise.all([ getBudgetScholarships().catch(err=>{console.error(err);return[];}), getAllCalendarEvents().catch(err=>{console.error(err);return[];}), Promise.resolve(getSavedStatusData()), getAllCustomScholarshipsFromDB().catch(err=>{console.error(err);return[];}) ]); const budgetItems=b??[]; const events=e??[]; const savedStatus=s??{}; const customDb=c??[]; const combinedList: CombinedScholarship[] = []; Object.entries(baseScholarships).forEach(([k, v])=>{ v.forEach(bs=>{ const svd=savedStatus[bs.id];const bId=`scholarship-${bs.id}`;const bi=budgetItems.find(i=>i&&String(i.id)===bId);let st:any=svd?.status??bs.status??"Not Submitted";let amt=null;if(st==='Awarded'){amt=bi?.cost??svd?.awardedAmount??null;}if(st==='Awarded'){if(!bi){st='Not Submitted';amt=null;}else{amt=(bi.cost!=null&&!isNaN(Number(bi.cost)))?Number(bi.cost):null;if(amt==null&&svd?.awardedAmount!=null){amt=svd.awardedAmount;}if(amt!=null&&amt<=0){amt=null;}}}else{amt=null;} combinedList.push({...bs,status:st,awardedAmount:amt,isCustom:false,categoryType:k as ScholarshipCategory});}); }); customDb.forEach(cs=>{ const svd=savedStatus[cs.id];const bId=`scholarship-${cs.id}`;const bi=budgetItems.find(i=>i&&String(i.id)===bId);let st:any=svd?.status??"Not Submitted";let amt=null;if(st==='Awarded'){amt=bi?.cost??svd?.awardedAmount??null;}if(st==='Awarded'){if(!bi){st='Not Submitted';amt=null;}else{amt=(bi.cost!=null&&!isNaN(Number(bi.cost)))?Number(bi.cost):null;if(amt==null&&svd?.awardedAmount!=null){amt=svd.awardedAmount;}if(amt!=null&&amt<=0){amt=null;}}}else{amt=null;} combinedList.push({...cs,status:st,awardedAmount:amt,isCustom:true,categoryType:'custom'}); }); setScholarships(combinedList); setCalendarEvents(events); } catch (error) { console.error("Init Load Err:", error); setInitError(`Failed load. Refresh.`); setScholarships([]); setCalendarEvents([]); } finally { setLoading(false); } };
+   // Replacement for the original single line 106:
+  const loadInitialData = async () => {
+    setLoading(true);
+    setInitError(null);
+
+    try {
+      // --- Fetch all required data concurrently ---
+      const [
+        budgetResult,
+        eventsResult,
+        savedStatusResult,
+        customDbResult
+      ] = await Promise.all([
+        getBudgetScholarships().catch(err => {
+          console.error("Error fetching budget scholarships:", err);
+          return []; // Return empty array on error
+        }),
+        getAllCalendarEvents().catch(err => {
+          console.error("Error fetching calendar events:", err);
+          return []; // Return empty array on error
+        }),
+        Promise.resolve(getSavedStatusData()), // Already handles errors internally/returns {}
+        getAllCustomScholarshipsFromDB().catch(err => {
+          console.error("Error fetching custom scholarships:", err);
+          return []; // Return empty array on error
+        })
+      ]);
+
+      // --- Process results (handle potential nulls from catches) ---
+      const budgetItems: BudgetScholarshipItem[] = budgetResult ?? [];
+      const events: CalendarEvent[] = eventsResult ?? [];
+      const savedStatus = savedStatusResult ?? {}; // Should be {} from getSavedStatusData on error
+      const customDb: CustomScholarship[] = customDbResult ?? [];
+
+      const combinedList: CombinedScholarship[] = [];
+
+      // --- Process Base Scholarships ---
+      Object.entries(baseScholarships).forEach(([categoryKey, scholarshipArray]) => {
+        const categoryType = categoryKey as ScholarshipCategory; // Assert type
+        scholarshipArray.forEach(baseSch => {
+          const savedData = savedStatus[baseSch.id];
+          const budgetItemId = `scholarship-${baseSch.id}`;
+          const budgetItem = budgetItems.find(item => item && String(item.id) === budgetItemId);
+
+          // Determine Status and Awarded Amount
+          let currentStatus: CombinedScholarship['status'] = savedData?.status ?? baseSch.status ?? "Not Submitted";
+          let currentAmount: number | null = null;
+
+          if (currentStatus === 'Awarded') {
+            // Prioritize budget item cost if available, then saved amount
+            currentAmount = budgetItem?.cost ?? savedData?.awardedAmount ?? null;
+
+            // Awarded specific logic: Ensure budget item exists and amount is valid
+            if (!budgetItem) {
+              // If awarded but no corresponding budget item, reset status
+              currentStatus = 'Not Submitted';
+              currentAmount = null;
+            } else {
+              // Recalculate amount based *primarily* on budget item if possible
+              const budgetCostNum = (budgetItem.cost != null && !isNaN(Number(budgetItem.cost))) ? Number(budgetItem.cost) : null;
+              currentAmount = budgetCostNum; // Start with budget cost
+
+              // Fallback to saved amount only if budget cost is null/invalid
+              if (currentAmount == null && savedData?.awardedAmount != null) {
+                currentAmount = savedData.awardedAmount;
+              }
+
+              // Ensure awarded amount is positive, otherwise nullify
+              if (currentAmount != null && currentAmount <= 0) {
+                currentAmount = null;
+                // Optional: Consider if status should also reset if amount becomes invalid
+                // currentStatus = 'Not Submitted';
+              }
+            }
+          } else {
+            // If status is not 'Awarded', amount must be null
+            currentAmount = null;
+          }
+
+          // Create the combined object explicitly
+          const combinedItem: CombinedScholarship = {
+            ...baseSch, // Spread base scholarship data (Omit<...> & {id: number})
+            status: currentStatus,
+            awardedAmount: currentAmount,
+            isCustom: false,
+            categoryType: categoryType,
+          };
+          combinedList.push(combinedItem);
+        });
+      });
+
+      // --- Process Custom Scholarships ---
+      customDb.forEach(customSch => { // customSch is type CustomScholarship
+        const savedData = savedStatus[customSch.id];
+        const budgetItemId = `scholarship-${customSch.id}`;
+        const budgetItem = budgetItems.find(item => item && String(item.id) === budgetItemId);
+
+        // Determine Status and Awarded Amount (Logic mirrored from base scholarships)
+        let currentStatus: CombinedScholarship['status'] = savedData?.status ?? "Not Submitted"; // Custom starts as Not Submitted if no saved data
+        let currentAmount: number | null = null;
+
+        if (currentStatus === 'Awarded') {
+          currentAmount = budgetItem?.cost ?? savedData?.awardedAmount ?? null;
+
+          if (!budgetItem) {
+            currentStatus = 'Not Submitted';
+            currentAmount = null;
+          } else {
+            const budgetCostNum = (budgetItem.cost != null && !isNaN(Number(budgetItem.cost))) ? Number(budgetItem.cost) : null;
+            currentAmount = budgetCostNum;
+            if (currentAmount == null && savedData?.awardedAmount != null) {
+              currentAmount = savedData.awardedAmount;
+            }
+            if (currentAmount != null && currentAmount <= 0) {
+              currentAmount = null;
+            }
+          }
+        } else {
+          currentAmount = null;
+        }
+
+        // Create the combined object explicitly (incorporating the debugging step)
+        const combinedItem: CombinedScholarship = {
+          ...customSch, // Spread custom scholarship data (CustomScholarship type)
+          status: currentStatus,
+          awardedAmount: currentAmount,
+          // isCustom is already true in customSch from db.ts type
+          categoryType: 'custom', // Explicitly set categoryType
+          // Ensure all non-optional fields from CombinedScholarship are present
+          // CustomSch provides: id, name, description, link, deadlineDate, deadlineDisplay, isCustom, additionalInfo?
+          // We add: status, awardedAmount, categoryType
+        };
+        combinedList.push(combinedItem); // Push the explicitly typed object
+      });
+
+      // --- Update State ---
+      setScholarships(combinedList);
+      setCalendarEvents(events);
+
+    } catch (error) {
+      console.error("Init Load Err:", error);
+      setInitError("Failed to load scholarship data. Please try refreshing the page.");
+      // Clear potentially partial data on error
+      setScholarships([]);
+      setCalendarEvents([]);
+    } finally {
+      setLoading(false);
+    }
+  }; // End of loadInitialData function definition
     loadInitialData();
   }, []);
 

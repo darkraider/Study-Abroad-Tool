@@ -19,6 +19,22 @@ export type CustomScholarship = {
   // We store the base details here. Status is managed externally.
 };
 
+
+// Type for items within an expense/asset category
+type ExpenseItemRecord = {
+  id: string | number;
+  item: string;
+  cost: number;
+};
+
+// Type for the main category record stored in the EXPENSES store
+type ExpenseCategoryRecord = {
+  id: number;
+  category: string;
+  type: "expense" | "asset"; // Use the specific literal union type
+  items: ExpenseItemRecord[]; // Use a mutable array of the item type
+};
+
 // Define the CalendarEvent type here as well or import if defined centrally
 type CalendarEvent = {
   id: string;
@@ -88,7 +104,13 @@ export function getDb(): Promise<IDBPDatabase<MyDBSchema>> {
             const expensesStore = db.createObjectStore(STORE_NAMES.EXPENSES, { keyPath: "id" });
              // Add default categories ONLY during the initial creation/upgrade
             console.log(`Adding default data to ${STORE_NAMES.EXPENSES}`);
-            const defaultExpenses = [ { id: 1, category: "Housing", type: "expense", items: [] }, { id: 2, category: "Transportation", type: "expense", items: [] }, { id: 3, category: "Program Fees", type: "expense", items: [] }, { id: 4, category: "Scholarships", type: "asset", items: [] }, ];
+            // --- Remove 'as const', add explicit type 'ExpenseCategoryRecord[]' ---
+            const defaultExpenses: ExpenseCategoryRecord[] = [
+              { id: 1, category: "Housing", type: "expense", items: [] },
+              { id: 2, category: "Transportation", type: "expense", items: [] },
+              { id: 3, category: "Program Fees", type: "expense", items: [] },
+              { id: 4, category: "Scholarships", type: "asset", items: [] },
+            ];
             Promise.all(defaultExpenses.map(expense => transaction.objectStore(STORE_NAMES.EXPENSES).put(expense))) .catch(err => console.error("Error adding default expenses:", err));
         }
 
