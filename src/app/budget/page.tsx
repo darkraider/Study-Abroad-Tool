@@ -370,7 +370,7 @@ const BudgetSheet = () => {
             <DialogContent className="sm:max-w-[425px] bg-white dark:bg-gray-800">
                 <DialogHeader>
                     <DialogTitle className="text-gray-900 dark:text-gray-100">Confirm Deletion</DialogTitle>
-                    <DialogDescription> Are you sure you want to delete the category <strong className="text-gray-800 dark:text-gray-200">"{categoryToDelete?.category}"</strong>? All items within this category will also be permanently deleted. This action cannot be undone. </DialogDescription>
+                    <DialogDescription> Are you sure you want to delete the category <strong className="text-gray-800 dark:text-gray-200">&quot;{categoryToDelete?.category}&quot;</strong>? All items within this category will also be permanently deleted. This action cannot be undone. </DialogDescription>
                 </DialogHeader>
                  {deleteCategoryError && <p className="py-2 text-sm text-red-500 dark:text-red-400 text-center">{deleteCategoryError}</p>}
                 <DialogFooter>
@@ -384,7 +384,7 @@ const BudgetSheet = () => {
         <Dialog open={isAddItemModalOpen} onOpenChange={setIsAddItemModalOpen}>
              <DialogContent className="sm:max-w-[425px] bg-white dark:bg-gray-800">
                 <DialogHeader>
-                    <DialogTitle className="text-gray-900 dark:text-gray-100">Add Item to "{addItemTargetCategory?.name}"</DialogTitle>
+                    <DialogTitle className="text-gray-900 dark:text-gray-100">Add Item to &quot;{addItemTargetCategory?.name}&quot;</DialogTitle>
                 </DialogHeader>
                 <div className="grid gap-4 py-4">
                     <div className="space-y-2">
@@ -460,7 +460,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, categoryTotal, is
                         <TableRow>
                             <TableCell colSpan={3} className="pt-3 px-4 pb-3">
                                 <Button variant="outline" size="sm" className="w-full text-gray-700 border-gray-300 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700" onClick={onAddItem}>
-                                    + Add Item to "{category.category}"
+                                    + Add Item to &quot;{category.category}&quot;
                                 </Button>
                             </TableCell>
                         </TableRow>
