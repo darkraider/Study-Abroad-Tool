@@ -32,11 +32,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     <>
       <DatabaseInitializer />
 
-      {/* Background Image Layer */}
-      <div
-        className="fixed inset-0 -z-10 bg-[url('/backgrounds/home-bg.jpg')] bg-cover bg-center blur-sm"
-        style={{ filter: 'brightness(0.8)' }}
-       />
 
       {/* Main Layout Container */}
       <div className={`relative isolate min-h-screen w-full overflow-x-hidden bg-transparent text-gray-900 dark:text-gray-100`}>

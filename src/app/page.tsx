@@ -251,16 +251,17 @@ export default function HomeScreen() {
 
     return (
         <Layout>
+
+<Image src="/backgrounds/home-bg.jpg" 
+                fill
+                className="object-cover fixed inset-0 -z-10 bg-cover bg-center blur-sm" alt= "Home BG" 
+                style={{ filter: 'brightness(0.8)' }} 
+                />      
+
             <div className="relative min-h-screen">
                 {/* Background Image */}
-               
-
-                <Image src="/backgrounds/home-bg.jpg" 
-                width={4000} 
-                height={1848} 
-                className="fixed inset-0 -z-10 bg-cover bg-center blur-sm" alt= "Home BG" 
-                style={{ filter: 'brightness(0.8)' }} 
-                />
+                
+                          
 
                 {/* Main Grid Layout */}
                 <div className="max-w-7xl mx-auto p-4 md:p-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
