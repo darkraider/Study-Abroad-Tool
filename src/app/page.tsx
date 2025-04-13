@@ -1,5 +1,6 @@
 "use client";
 
+
 import React, { useState, useEffect, useMemo } from "react"; // Added React explicitly for component type
 import { useRouter } from "next/navigation";
 import Layout from "@/app/components/layout"; // Verify path
@@ -8,6 +9,7 @@ import "react-circular-progressbar/dist/styles.css";
 import { format, differenceInWeeks, parseISO, isValid, differenceInCalendarDays } from "date-fns";
 import { getDb, STORE_NAMES } from "@/lib/db"; // Verify path
 import { Button } from "@/components/ui/button";
+import  Image  from 'next/image'
 
 // --- Type Definitions ---
 // Define types based on expected DB structure (adjust if your db.ts schema differs)
@@ -206,6 +208,7 @@ const DeadlineItem: React.FC<{ event: CalendarEvent }> = ({ event }) => {
 // --- HomeScreen Component ---
 export default function HomeScreen() {
     const router = useRouter();
+
     // Use specific types for state
     const [upcomingDeadlines, setUpcomingDeadlines] = useState<CalendarEvent[]>([]);
     const [budgetProgress, setBudgetProgress] = useState<BudgetProgressData>({ totalBudget: 0, totalSaved: 0, scholarshipTotal: 0, progress: 0 });
@@ -250,9 +253,13 @@ export default function HomeScreen() {
         <Layout>
             <div className="relative min-h-screen">
                 {/* Background Image */}
-                <div
-                    className="fixed inset-0 -z-10 bg-[url('/backgrounds/home-bg.jpg')] bg-cover bg-center blur-sm" // Added bg-center
-                    style={{ filter: 'brightness(0.8)' }}
+               
+
+                <Image src="/backgrounds/home-bg.jpg" 
+                width={4000} 
+                height={1848} 
+                className="fixed inset-0 -z-10 bg-cover bg-center blur-sm" alt= "Home BG" 
+                style={{ filter: 'brightness(0.8)' }} 
                 />
 
                 {/* Main Grid Layout */}
