@@ -4,10 +4,10 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "next build && node create-nojekyll.ts",
+    "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "deploy": "npm run build && gh-pages -d out"
+    "deploy": "npm run build && gh-pages --nojekyll -d out"
   },
   "dependencies": {
     "@dnd-kit/accessibility": "^3.1.1",
