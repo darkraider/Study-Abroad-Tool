@@ -10,6 +10,7 @@ import { format, differenceInWeeks, parseISO, isValid, differenceInCalendarDays 
 import { getDb, STORE_NAMES } from "@/lib/db"; // Verify path
 import { Button } from "@/components/ui/button";
 import  Image  from 'next/image'
+import background from '../../public/backgrounds/home-bg.jpg'
 
 // --- Type Definitions ---
 // Define types based on expected DB structure (adjust if your db.ts schema differs)
@@ -252,7 +253,7 @@ export default function HomeScreen() {
     return (
         <Layout>
 
-<Image src="/backgrounds/home-bg.jpg" 
+                <Image src={background} 
                 fill
                 className="object-cover fixed inset-0 -z-10 bg-cover bg-center blur-sm" alt= "Home BG" 
                 style={{ filter: 'brightness(0.8)' }} 
