@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "deploy": "npm run build && gh-pages --nojekyll -d out"
+    "export": "next build && next export",
+    "deploy": "next build && gh-pages --nojekyll -d out"
   },
   "dependencies": {
     "@dnd-kit/accessibility": "^3.1.1",
