@@ -7,8 +7,8 @@ const nextConfig: NextConfig = {
   /* config options here */
   output: 'export',
 
-  basePath: isProd ? '/Study-Abroad-Tool' : '',
-  assetPrefix: isProd ? '/Study-Abroad-Tool/' : '',
+  //basePath: isProd ? '/Study-Abroad-Tool' : '',
+  //assetPrefix: isProd ? '/Study-Abroad-Tool/' : '',
 
   images: { 
     unoptimized: true, 
