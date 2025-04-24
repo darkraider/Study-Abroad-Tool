@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Image from 'next/image'; // Ensure Image is imported
-import background from '../../../public/backgrounds/budget-bg.jpg'; // Import the specific background
+import background from '../../../public/backgrounds/budget-bg.webp'; // Import the specific background
 
 import {
   Table,

@@ -1,7 +1,7 @@
 "use client";
 
 import Image from 'next/image';
-import background from '../../../public/backgrounds/scholarship-bg.jpg';
+import background from '../../../public/backgrounds/scholarship-bg.webp';
 import { useState } from "react"; // Keep useState if menuOpen might be used later
 import { useRouter } from "next/navigation";
 // Removed Menu, X imports as they aren't used in the provided JSX for this page

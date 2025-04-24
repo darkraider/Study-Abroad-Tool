@@ -39,7 +39,7 @@ import {
 import { isValid, parseISO, format } from 'date-fns'
 import { Pencil, Trash2 } from 'lucide-react'
 import Image from 'next/image'
-import background from '../../../public/backgrounds/planner-bg.jpg'
+import background from '../../../public/backgrounds/planner-bg.webp'
 
 // --- Type Definitions ---
 type CombinedScholarship = {

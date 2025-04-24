@@ -46,6 +46,7 @@ export default function Layout({ children, backgroundImageSrc }: LayoutProps) {
               objectFit="cover"
               className="fixed inset-0 w-full h-full object-cover -z-10 blur-sm pointer-events-none"
               style={{ filter: 'brightness(0.8)' }}
+              placeholder="blur"
               priority
             />
           )}

@@ -9,7 +9,7 @@ import Layout from "@/app/components/layout";
 import { getDb, STORE_NAMES } from "@/lib/db";
 import { isValid, parseISO, format } from "date-fns"; // Added format
 import Image from 'next/image';
-import background from '../../../public/backgrounds/calendar-bg.jpg';
+import background from '../../../public/backgrounds/calendar-bg.webp';
 
 // --- UI Component Imports ---
 // Assuming shadcn/ui setup. Adjust paths if necessary.

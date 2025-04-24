@@ -9,7 +9,7 @@ import { format, differenceInWeeks, parseISO, isValid, differenceInCalendarDays 
 import { getDb, STORE_NAMES } from "@/lib/db"; // Verify path
 import { Button } from "@/components/ui/button";
 import Image from 'next/image'; // Make sure Image is imported
-import background from '../../public/backgrounds/home-bg.jpg'; // Import the specific background
+import background from '../../public/backgrounds/home-bg.webp'; // Import the specific background
 
 // --- Type Definitions ---
 // Define types based on expected DB structure (adjust if your db.ts schema differs)

@@ -11,7 +11,7 @@ import { useRouter } from "next/navigation";
 import { format, differenceInWeeks, parseISO, isValid } from "date-fns";
 import { getDb, STORE_NAMES } from "@/lib/db"; // Ensure path is correct
 import Image from 'next/image';
-import background from '../../../public/backgrounds/savings-bg.jpg';
+import background from '../../../public/backgrounds/savings-bg.webp';
 
 // --- Type Definitions ---
 type SavingsEntry = {
