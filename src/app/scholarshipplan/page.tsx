@@ -978,9 +978,6 @@ export default function ScholarshipPlan () {
 
   return (
     <Layout backgroundImageSrc={background}>
-      
-
-
       <div className='relative min-h-screen'>
         {/* Optional Background */}
         {/* Main Content Area */}
@@ -1012,7 +1009,9 @@ export default function ScholarshipPlan () {
                 <Button
                   onClick={() => openCustomModal('add')}
                   variant='outline'
-                  className={'hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-gray-200'}
+                  className={
+                    'hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-gray-200'
+                  }
                 >
                   + Add Custom Scholarship
                 </Button>
