@@ -10,6 +10,8 @@ import Layout from "@/app/components/layout"; // Ensure path is correct
 import { useRouter } from "next/navigation";
 import { format, differenceInWeeks, parseISO, isValid } from "date-fns";
 import { getDb, STORE_NAMES } from "@/lib/db"; // Ensure path is correct
+import Image from 'next/image';
+import background from '../../../public/backgrounds/savings-bg.jpg';
 
 // --- Type Definitions ---
 type SavingsEntry = {
@@ -142,10 +144,11 @@ export default function SavingsCalculator() {
   if (loading) return <Layout><div className="p-4 text-center dark:text-gray-200">Loading Calculator...</div></Layout>;
 
   return (
-    <Layout>
+    <Layout backgroundImageSrc={background}>
+ 
       <div className="relative min-h-screen">
-         {/* Background Image - Using -z-9 as requested */}
-        {/* <div className="fixed inset-0 -z-9 bg-[url('/backgrounds/savings-bg.jpg')] bg-cover blur-sm" style={{ filter: 'brightness(0.8)' }} /> */}
+         {/* Background Image - Using -z-10 as requested */}
+          
 
         {/* Main container uses dark: variants */}
         <div className="max-w-4xl mx-auto p-6 backdrop-blur-lg rounded-xl shadow-lg bg-white/95 text-gray-900 dark:bg-gray-900/90 dark:text-gray-100">

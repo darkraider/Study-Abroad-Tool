@@ -1,18 +1,25 @@
+// sat/components/layout.ts
 "use client";
-import { useState, useEffect } from "react"; // useEffect is needed now
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Menu, X, Sun, Moon, Loader2 } from "lucide-react"; // Added Loader2 for placeholder
+import { Menu, X, Sun, Moon, Loader2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTheme } from "@/context/ThemeContext";
 import { DatabaseInitializer } from "@/app/components/DatabaseInitializer";
+import Image, { StaticImageData } from 'next/image';
+import Link from "next/link";
 
-export default function Layout({ children }: { children: React.ReactNode }) {
+interface LayoutProps {
+  children: React.ReactNode;
+  backgroundImageSrc?: StaticImageData | string;
+}
+
+export default function Layout({ children, backgroundImageSrc }: LayoutProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const router = useRouter();
   const { isDarkMode, toggleTheme } = useTheme();
-  const [hasMounted, setHasMounted] = useState(false); // <-- Add state for mounting
+  const [hasMounted, setHasMounted] = useState(false);
 
-  // <-- Add useEffect to set hasMounted to true on client-side mount
   useEffect(() => {
     setHasMounted(true);
   }, []);
@@ -22,21 +29,29 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     router.push(path);
   };
 
-  useEffect(() => {
-    const handleRouteChange = () => setMenuOpen(false);
-    // ... potential router event listeners if needed
-  }, [router]);
-
-
   return (
     <>
       <DatabaseInitializer />
 
+      {/* Main Layout Container - Relative positioning context */}
+      {/* Removed 'isolate', kept 'relative' for positioning children */}
+      {/* Added overflow-hidden to prevent container itself from causing scroll issues */}
+      <div className={`relative min-h-screen w-full overflow-hidden bg-transparent text-gray-900 dark:text-gray-100`}>
 
-      {/* Main Layout Container */}
-      <div className={`relative isolate min-h-screen w-full overflow-x-hidden bg-transparent text-gray-900 dark:text-gray-100`}>
+          {/* --- Background Image Rendered INSIDE main div, but FIRST --- */}
+          {backgroundImageSrc && (
+            <Image
+              src={backgroundImageSrc}
+              alt="Page background"
+              objectFit="cover"
+              className="fixed inset-0 w-full h-full object-cover -z-10 blur-sm pointer-events-none"
+              style={{ filter: 'brightness(0.8)' }}
+              priority
+            />
+          )}
 
-        {/* Top Navigation Bar */}
+        {/* Top Navigation Bar (Fixed, z-30) */}
+        {/* Should position correctly relative to viewport */}
         <nav className={`fixed top-0 left-0 right-0 p-4 flex items-center justify-between shadow-lg z-30 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm`}>
           <button
             onClick={() => setMenuOpen(!menuOpen)}
@@ -47,27 +62,22 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             <Menu size={28} />
           </button>
           <h1 className="text-xl font-semibold text-gray-900 dark:text-gray-100">Study Abroad Tool</h1>
-          {/* Theme Toggle Button - Modified */}
            <button
               onClick={toggleTheme}
               className="p-2 w-[40px] h-[40px] flex items-center justify-center rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:focus:ring-offset-gray-800 text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 transition-colors"
-              // Disable button until mounted to prevent interaction mismatch
               disabled={!hasMounted}
-              // Set a generic aria-label initially, or specific one after mount
               aria-label={hasMounted ? (isDarkMode ? "Switch to light theme" : "Switch to dark theme") : "Toggle theme"}
            >
-             {/* Render placeholder or actual icon based on mount state */}
              {!hasMounted ? (
-                // Placeholder during server render and initial client render
                 <Loader2 size={22} className="animate-spin opacity-50" />
              ) : (
-                // Render correct icon after mounting
                 isDarkMode ? <Sun size={22} /> : <Moon size={22} />
              )}
            </button>
         </nav>
 
-        {/* Hamburger Menu */}
+        {/* Hamburger Menu (Fixed, z-40/z-50) */}
+        {/* Should position correctly relative to viewport */}
         <AnimatePresence>
           {menuOpen && (
             <>
@@ -77,7 +87,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="fixed inset-0 bg-black/50 z-40"
+                className="fixed inset-0 bg-black/50 z-40" // z-40
                 onClick={() => setMenuOpen(false)}
                 aria-hidden="true"
                />
@@ -88,6 +98,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 animate={{ x: 0 }}
                 exit={{ x: "-100%" }}
                 transition={{ type: "tween", ease: "easeInOut", duration: 0.3 }}
+                // z-50 ensures it's above overlay and nav
                 className={`fixed top-0 left-0 h-full w-72 max-w-[80vw] shadow-2xl p-5 z-50 bg-white text-gray-900 dark:bg-gray-800 dark:text-gray-100 flex flex-col`}
                 role="dialog"
                 aria-modal="true"
@@ -115,7 +126,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 </ul>
                  {/* Menu Footer */}
                 <div className="mt-auto pt-4 border-t border-gray-200 dark:border-gray-700/50 text-center text-xs text-gray-500 dark:text-gray-400">
-                  Study Abroad Tool v1.0
+                  Study Abroad Tool v1.1 by <Link rel="noopener noreferrer" target="_blank" href='https://www.linkedin.com/in/moorela/'>Levi Moore</Link>
                 </div>
               </motion.div>
             </>
@@ -123,11 +134,16 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         </AnimatePresence>
 
         {/* Page Content Wrapper */}
-        <main className="relative z-10 pt-20 pb-10 px-4 sm:px-6 lg:px-8">
-          {children}
+        {/* Make this the explicit scroll container */}
+        {/* Relative z-10 places it above background but below nav/menu */}
+        {/* Calculate max-height to account for fixed navbar */}
+        <main
+         className="relative z-10 px-4 sm:px-6 lg:px-8 overflow-y-auto pt-20 pb-10" 
+        >
+           {children}
         </main>
 
-      </div>
+      </div> {/* End Main Layout Container */}
     </>
   );
 }

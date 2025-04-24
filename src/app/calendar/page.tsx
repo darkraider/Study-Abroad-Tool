@@ -8,6 +8,8 @@ import interactionPlugin from "@fullcalendar/interaction";
 import Layout from "@/app/components/layout";
 import { getDb, STORE_NAMES } from "@/lib/db";
 import { isValid, parseISO, format } from "date-fns"; // Added format
+import Image from 'next/image';
+import background from '../../../public/backgrounds/calendar-bg.jpg';
 
 // --- UI Component Imports ---
 // Assuming shadcn/ui setup. Adjust paths if necessary.
@@ -205,10 +207,13 @@ export default function CalendarPage() {
 
 
   return (
-    <Layout>
-      <div className="relative min-h-screen">
+    <Layout backgroundImageSrc={background}>
+
+
+
+      
         {/* Background */}
-        <div className="fixed inset-0 -z-10 bg-[url('/backgrounds/calendar-bg.jpg')] bg-cover blur-sm" style={{ filter: 'brightness(0.8)' }} />
+          
 
         {/* Main container */}
         <div className="flex flex-col md:flex-row gap-4 p-4 max-w-7xl mx-auto">
@@ -246,7 +251,7 @@ export default function CalendarPage() {
             </div>
           </div>
         </div>
-      </div>
+      
 
       {/* Add Event Modal */}
       <Dialog open={isAddModalOpen} onOpenChange={setIsAddModalOpen}>

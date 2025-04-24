@@ -1,3 +1,5 @@
+// ThemeContext.ts
+
 import React, { createContext, useContext, useState, useEffect } from "react";
 
 // Define the shape of the context value
@@ -6,10 +8,11 @@ interface ThemeContextType {
   toggleTheme: () => void;
 }
 
-// Create the context with a default value (adjust default isDarkMode if needed)
+// Create the context with a default value
+// The actual default is determined by useState initializer below
 const ThemeContext = createContext<ThemeContextType>({
-  isDarkMode: true, // Default can be true or based on initial check
-  toggleTheme: () => { console.warn("toggleTheme called before Provider mounted"); }, // Default no-op
+  isDarkMode: true, // Initial context default (less important)
+  toggleTheme: () => { console.warn("toggleTheme called before Provider mounted"); },
 });
 
 // Custom hook to use the theme context
@@ -18,38 +21,40 @@ export const useTheme = () => useContext(ThemeContext);
 // Theme Provider component
 export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
 
-  // 1. Initialize state: Check localStorage -> System Preference -> Default
+  // 1. Initialize state: Check localStorage -> Default to Dark
   const [isDarkMode, setIsDarkMode] = useState<boolean>(() => {
-    // Check only on client-side after mount potentially, or handle SSR default
+    // Check only on client-side
     if (typeof window !== 'undefined') {
       const storedPref = localStorage.getItem("theme");
       if (storedPref) {
+        // If a theme is stored, use it
         return storedPref === "dark";
       }
-      // If no stored preference, check the OS/browser setting
-      return window.matchMedia("(prefers-color-scheme: dark)").matches;
+      // If NO theme is stored in localStorage, default to DARK
+      // We are bypassing the system preference check here for the initial default
+      return true; // <-- Set default to dark
     }
     // Default theme for SSR or if window is unavailable (e.g., true for dark default)
-    return true; // Or false if you prefer light default
+    // Ensures server render matches the default client intent
+    return true; // <-- Also set default to dark for SSR/initial render
   });
 
-  // 2. useEffect to manage the 'dark' class on <html> and localStorage
+  // 2. useEffect to manage the 'dark' class on <html> and localStorage (No change needed here)
   useEffect(() => {
-    const root = window.document.documentElement; // Get the <html> element
+    const root = window.document.documentElement;
 
     if (isDarkMode) {
       root.classList.add("dark");
       localStorage.setItem("theme", "dark");
-      console.log("Theme set to Dark"); // For debugging
+      // console.log("Theme set to Dark");
     } else {
       root.classList.remove("dark");
       localStorage.setItem("theme", "light");
-       console.log("Theme set to Light"); // For debugging
+      // console.log("Theme set to Light");
     }
-     // This effect should run whenever isDarkMode changes
   }, [isDarkMode]);
 
-  // 3. Toggle function just updates the state
+  // 3. Toggle function (No change needed here)
   const toggleTheme = () => {
     setIsDarkMode(prevMode => !prevMode);
   };

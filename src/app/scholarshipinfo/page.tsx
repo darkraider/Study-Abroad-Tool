@@ -1,5 +1,7 @@
 "use client";
 
+import Image from 'next/image';
+import background from '../../../public/backgrounds/scholarship-bg.jpg';
 import { useState } from "react"; // Keep useState if menuOpen might be used later
 import { useRouter } from "next/navigation";
 // Removed Menu, X imports as they aren't used in the provided JSX for this page
@@ -19,13 +21,11 @@ export default function ScholarshipScreen() {
   };
 
   return (
-    <Layout>
+    <Layout backgroundImageSrc={background}>
+
       <div className="relative min-h-screen">
          {/* Background Image - Using -z-9 as requested */}
-        <div
-          className="fixed inset-0 -z-9 bg-[url('/backgrounds/scholarship-bg.jpg')] bg-cover blur-sm"
-          style={{ filter: 'brightness(0.8)' }}
-        />
+         
 
         {/* Main container uses dark: variants */}
         <div className="max-w-4xl mx-auto p-6 md:p-8 backdrop-blur-lg rounded-xl shadow-lg bg-white/95 text-gray-900 dark:bg-gray-900/90 dark:text-gray-100">

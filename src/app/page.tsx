@@ -1,6 +1,5 @@
 "use client";
 
-
 import React, { useState, useEffect, useMemo } from "react"; // Added React explicitly for component type
 import { useRouter } from "next/navigation";
 import Layout from "@/app/components/layout"; // Verify path
@@ -9,8 +8,8 @@ import "react-circular-progressbar/dist/styles.css";
 import { format, differenceInWeeks, parseISO, isValid, differenceInCalendarDays } from "date-fns";
 import { getDb, STORE_NAMES } from "@/lib/db"; // Verify path
 import { Button } from "@/components/ui/button";
-import  Image  from 'next/image'
-import background from '../../public/backgrounds/home-bg.jpg'
+import Image from 'next/image'; // Make sure Image is imported
+import background from '../../public/backgrounds/home-bg.jpg'; // Import the specific background
 
 // --- Type Definitions ---
 // Define types based on expected DB structure (adjust if your db.ts schema differs)
@@ -251,18 +250,13 @@ export default function HomeScreen() {
     }, [budgetProgress.totalSaved, budgetProgress.scholarshipTotal]);
 
     return (
-        <Layout>
+        <Layout backgroundImageSrc={background}>
 
-                <Image src={background} 
-                fill
-                className="object-cover fixed inset-0 -z-10 bg-cover bg-center blur-sm" alt= "Home BG" 
-                style={{ filter: 'brightness(0.8)' }} 
-                />      
+            {/* Background Image: Fixed, Covers viewport, behind content */}
+            
 
-            <div className="relative min-h-screen">
-                {/* Background Image */}
-                
-                          
+            {/* Main Content Area: Relative positioning with padding-top for nav */}
+            <div className="relative z-0"> {/* Added min-h-screen here ensures content area can fill viewport height if needed */}
 
                 {/* Main Grid Layout */}
                 <div className="max-w-7xl mx-auto p-4 md:p-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -271,25 +265,25 @@ export default function HomeScreen() {
                     <div className="backdrop-blur-lg rounded-xl shadow-lg p-6 bg-white/95 dark:bg-gray-800/90">
                         <h3 className="text-xl font-bold mb-4 text-gray-900 dark:text-gray-100">Budget Progress</h3>
                         {loading ? (
-                            <div className="flex justify-center items-center h-40 text-gray-600 dark:text-gray-400"><p>Loading Budget...</p></div> // Add spinner here?
+                            <div className="flex justify-center items-center h-40 text-gray-600 dark:text-gray-400"><p>Loading Budget...</p></div>
                         ) : error ? (
                             <div className="flex justify-center items-center h-40 text-red-500 p-4 text-center"><p>{error}</p></div>
                         ) : (
                             <div className="flex flex-col md:flex-row items-center gap-6">
                                 <div className="w-32 h-32 flex-shrink-0">
-                                    {/* Ensure CSS Vars are defined in globals.css */}
                                     <CircularProgressbar
                                         value={budgetProgress.progress}
                                         text={`${Math.round(budgetProgress.progress)}%`}
                                         styles={buildStyles({
-                                            pathColor: `rgba(62, 152, 199, ${Math.max(0.1, budgetProgress.progress / 100)})`,
-                                            textColor: 'var(--progress-text-color)',
-                                            trailColor: 'var(--progress-trail-color)',
-                                            backgroundColor: '#3e98c7', // Background inside the circle if needed
+                                            // Colors should adapt based on theme via CSS variables defined in globals.css
+                                            pathColor: `rgba(62, 152, 199, ${Math.max(0.1, budgetProgress.progress / 100)})`, // Example color, adjust as needed
+                                            textColor: 'var(--progress-text-color)', // Uses CSS variable
+                                            trailColor: 'var(--progress-trail-color)', // Uses CSS variable
+                                            backgroundColor: '#3e98c7',
                                         })}
                                     />
                                 </div>
-                                <div className="space-y-2 text-center md:text-left text-sm"> {/* Reduced text size slightly */}
+                                <div className="space-y-2 text-center md:text-left text-sm">
                                      <p className="font-medium text-gray-900 dark:text-gray-100"><span className="text-gray-600 dark:text-gray-400">Target Budget:</span><span className="ml-2">${budgetProgress.totalBudget.toFixed(2)}</span></p>
                                      <p className="font-medium text-gray-900 dark:text-gray-100"><span className="text-gray-600 dark:text-gray-400">Scholarships:</span><span className="ml-2">${budgetProgress.scholarshipTotal.toFixed(2)}</span></p>
                                      <p className="font-medium text-gray-900 dark:text-gray-100"><span className="text-gray-600 dark:text-gray-400">Personal Savings:</span><span className="ml-2">${Math.max(0, savedAmountExcludingScholarships).toFixed(2)}</span></p>
@@ -341,12 +335,12 @@ export default function HomeScreen() {
                     <div className="backdrop-blur-lg rounded-xl shadow-lg p-6 bg-white/95 dark:bg-gray-800/90">
                         <h3 className="text-xl font-bold mb-4 text-gray-900 dark:text-gray-100">Upcoming Deadlines <span className="text-sm font-normal text-gray-500 dark:text-gray-400">(Next {DAYS_AHEAD_FOR_DEADLINES} Days)</span></h3>
                         {loading ? (
-                           <div className="flex justify-center items-center h-40 text-gray-600 dark:text-gray-400"><p>Loading Deadlines...</p></div> // Add spinner here?
+                           <div className="flex justify-center items-center h-40 text-gray-600 dark:text-gray-400"><p>Loading Deadlines...</p></div>
                         ) : error ? (
                             <div className="flex justify-center items-center h-40 text-red-500 p-4 text-center"><p>{error}</p></div>
                         ) : upcomingDeadlines.length > 0 ? (
                             <ul className="space-y-3">
-                                {/* Use the new DeadlineItem component */}
+                                {/* Use the DeadlineItem component */}
                                 {upcomingDeadlines.map((event) => (
                                     <DeadlineItem key={event.id} event={event} />
                                 ))}

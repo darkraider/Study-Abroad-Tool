@@ -5,6 +5,9 @@ import { useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import Image from 'next/image'; // Ensure Image is imported
+import background from '../../../public/backgrounds/budget-bg.jpg'; // Import the specific background
+
 import {
   Table,
   TableHeader,
@@ -255,18 +258,14 @@ const BudgetSheet = () => {
   if (error && expenses.length === 0) return <Layout><div className="p-4 text-center text-red-500">{error}</div></Layout>;
 
   return (
-    <Layout>
-      <div className="relative min-h-screen">
-        {/* Background */}
-        <div
-          className="fixed inset-0 -z-10 bg-[url('/backgrounds/budget-bg.jpg')] bg-cover bg-center blur-sm"
-          style={{ filter: 'brightness(0.8)' }}
-        />
+    <Layout backgroundImageSrc={background}>
+
+     
 
         {/* Main content alignment container */}
         <div className="max-w-4xl mx-auto p-4">
 
-          {/* NEW Encompassing Container */}
+          {/* Encompassing Container with backdrop blur */}
           <div className="backdrop-blur-lg rounded-xl shadow-lg p-4 md:p-6 bg-white/90 dark:bg-gray-800/90 space-y-6">
 
             <h1 className="text-3xl font-bold text-center text-gray-900 dark:text-gray-100">Budget Sheet</h1>
@@ -275,11 +274,11 @@ const BudgetSheet = () => {
             {error && <div className="p-3 bg-red-100 dark:bg-red-900/30 border border-red-400 dark:border-red-600 text-red-700 dark:text-red-300 rounded text-center text-sm">{error} <Button variant="ghost" size="sm" onClick={() => setError(null)} className="ml-2 text-xs h-auto p-1 align-middle">Dismiss</Button></div>}
 
             {/* Add Category Section */}
-            <Card className="shadow-sm bg-white/95 border-gray-200 dark:bg-gray-800/95 dark:border-gray-700"> {/* Kept internal card structure */}
-              <CardHeader className="p-4"> {/* Adjusted padding if needed */}
+            <Card className="shadow-sm bg-white/95 border-gray-200 dark:bg-gray-800/95 dark:border-gray-700">
+              <CardHeader className="p-4">
                  <CardTitle className="text-lg font-semibold text-gray-700 dark:text-gray-200">Add New Category</CardTitle>
               </CardHeader>
-              <CardContent className="p-4"> {/* Adjusted padding if needed */}
+              <CardContent className="p-4">
                 <div className="flex flex-col sm:flex-row gap-3 items-start">
                     <div className="flex-grow w-full">
                       <Input
@@ -328,7 +327,7 @@ const BudgetSheet = () => {
             </section>
 
             {/* Total Section */}
-            <Card className="bg-gray-100/90 dark:bg-gray-800/90 shadow-md border-gray-200 dark:border-gray-700 backdrop-blur-sm"> {/* Kept internal card structure */}
+            <Card className="bg-gray-100/90 dark:bg-gray-800/90 shadow-md border-gray-200 dark:border-gray-700 backdrop-blur-sm">
                 <CardHeader>
                   <CardTitle className="text-xl text-gray-800 dark:text-gray-100">Budget Summary</CardTitle>
                 </CardHeader>
@@ -342,9 +341,9 @@ const BudgetSheet = () => {
                 </CardContent>
             </Card>
 
-          </div> {/* End NEW Encompassing Container */}
-        </div> {/* End Main content alignment container */}
-      </div> {/* End Relative container */}
+          </div> {/* End Encompassing Container */}
+       </div>
+    
 
       {/* --- Modals --- */}
       {/* Edit Category Modal */}
@@ -410,7 +409,6 @@ const BudgetSheet = () => {
 
 
 // --- Sub-Component for Category Card ---
-// (Keep whitespace fixes from previous step)
 interface CategoryCardProps { category: ExpenseCategory; categoryTotal: number; isDefault: boolean; onEditCategory: () => void; onDeleteCategory: () => void; onAddItem: () => void; onRemoveItem: (categoryId: number, itemId: string) => void; onCostChange: (itemId: string, value: string) => void; onCostSave: (categoryId: number, itemId: string) => void; editingItemCost: { [itemId: string]: string }; itemCostErrors: { [itemId: string]: string }; }
 const CategoryCard: React.FC<CategoryCardProps> = ({ category, categoryTotal, isDefault, onEditCategory, onDeleteCategory, onAddItem, onRemoveItem, onCostChange, onCostSave, editingItemCost, itemCostErrors, }) => {
     return (
