@@ -131,8 +131,6 @@ export default function ScholarshipScreen () {
             <ul className='list-disc list-inside space-y-2 mb-4 text-gray-700 dark:text-gray-300 pl-4'>
               <li>Fund for Education Abroad (FEA)</li>
               <li>Freeman-ASIA</li>
-              <li>Diversity Abroad</li>
-              <li>GoOverseas / GoAbroad Scholarships</li>
             </ul>
             <p className='text-gray-700 dark:text-gray-300'>
               This category is vast, with numerous scholarships available.

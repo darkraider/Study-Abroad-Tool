@@ -53,9 +53,9 @@ type CombinedScholarship = {
   status: 'Not Submitted' | 'Applied' | 'Awarded' | 'Rejected'
   awardedAmount: number | null
   isCustom?: boolean
-  categoryType?: 'government' | 'school' | 'thirdParty' | 'custom'
+  categoryType?: 'government' | 'school' | 'thirdParty' | 'affiliate' | 'custom'
 }
-type ScholarshipCategory = 'government' | 'school' | 'thirdParty'
+type ScholarshipCategory = 'government' | 'school' | 'thirdParty' | 'affiliate'
 type BaseScholarshipData = {
   [key in ScholarshipCategory]: (Omit<
     CombinedScholarship,
@@ -134,6 +134,30 @@ const baseScholarships: BaseScholarshipData = {
       awardedAmount: null
     }
   ],
+  affiliate: [
+    {
+      id: 8,
+      name: 'IES Abroad Scholarships & Aid',
+      description:
+        'Provider offering need-based, merit, and diversity scholarships.',
+      link: 'https://www.iesabroad.org/scholarships-aid',
+      deadlineDate: '2025-11-01',
+      deadlineDisplay: "Nov 1, 2025 (for Spring '26)",
+      status: 'Not Submitted',
+      awardedAmount: null
+    },
+    {
+      id: 9,
+      name: 'CIEE Scholarships & Grants',
+      description:
+        'Provider offering need-based grants and merit scholarships.',
+      link: 'https://www.ciee.org/go-abroad/college-study-abroad/scholarships',
+      deadlineDate: '2025-10-15',
+      deadlineDisplay: "Oct 15, 2025 (for Spring '26)",
+      status: 'Not Submitted',
+      awardedAmount: null
+    },
+  ],
   thirdParty: [
     {
       id: 6,
@@ -156,40 +180,9 @@ const baseScholarships: BaseScholarshipData = {
       status: 'Not Submitted',
       awardedAmount: null
     },
-    {
-      id: 8,
-      name: 'Diversity Abroad Scholarships',
-      description: 'Platform listing scholarships often for diverse students.',
-      link: 'https://www.diversityabroad.com/scholarships',
-      deadlineDate: null,
-      deadlineDisplay: 'Varies (Check Website)',
-      status: 'Not Submitted',
-      awardedAmount: null
-    },
-    {
-      id: 9,
-      name: 'IES Abroad Scholarships & Aid',
-      description:
-        'Provider offering need-based, merit, and diversity scholarships.',
-      link: 'https://www.iesabroad.org/scholarships-aid',
-      deadlineDate: '2025-11-01',
-      deadlineDisplay: "Nov 1, 2025 (for Spring '26)",
-      status: 'Not Submitted',
-      awardedAmount: null
-    },
+  
     {
       id: 10,
-      name: 'CIEE Scholarships & Grants',
-      description:
-        'Provider offering need-based grants and merit scholarships.',
-      link: 'https://www.ciee.org/go-abroad/college-study-abroad/scholarships',
-      deadlineDate: '2025-10-15',
-      deadlineDisplay: "Oct 15, 2025 (for Spring '26)",
-      status: 'Not Submitted',
-      awardedAmount: null
-    },
-    {
-      id: 11,
       name: 'Bridging Scholarships (Japan)',
       description:
         'Supports U.S. undergrads studying in Japan (semester/year).',
@@ -1016,7 +1009,7 @@ export default function ScholarshipPlan () {
                   + Add Custom Scholarship
                 </Button>
               </DialogTrigger>
-              <DialogContent className='sm:max-w-lg bg-white dark:bg-gray-800'>
+              <DialogContent className='custom-scrollbar sm:max-w-lg bg-white dark:bg-gray-800'>
                 <DialogHeader>
                   <DialogTitle className='text-gray-900 dark:text-gray-100'>
                     {modalMode === 'add'
@@ -1171,9 +1164,10 @@ export default function ScholarshipPlan () {
               >
                 {' '}
                 <option value='all'>All</option>{' '}
-                <option value='government'>Gov</option>{' '}
+                <option value='government'>Government</option>{' '}
                 <option value='school'>School</option>{' '}
                 <option value='thirdParty'>Third Party</option>{' '}
+                <option value='affiliate'>Affiliate</option>
                 <option value='custom'>Custom</option>{' '}
               </select>
               <label htmlFor='sort-select' className='sr-only'>
